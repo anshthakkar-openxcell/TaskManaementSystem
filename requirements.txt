@@ -1,0 +1,11 @@
+fastapi
+uvicorn[standard]
+sqlalchemy>=2.0
+aiosqlite
+sqlmodel
+python-jose[cryptography]
+passlib[bcrypt]
+pydantic
+email-validator
+redis>=5.0.0
+pydantic-settings
