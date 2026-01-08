@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import APIRouter, Depends, HTTPException, Query
 from app.db.database import get_db
-from app.services.subtask_service import update_subtask, delete_subtask
+from app.services.subtask_service import update_subtask, delete_subtask,get_task_id_by_subtask_id
 from app.schemas.subtask import SubtaskUpdate, SubtaskResponse
 from typing import List
 from app.auth.utils import get_current_user_id
@@ -17,6 +17,7 @@ async def update_existing_substask(
     db: AsyncSession = Depends(get_db),
     user_id: int = Depends(get_current_user_id)
 ):
+    task_id = await get_task_id_by_subtask_id(db, substask_id)
     await verify_task_owner(db, task_id, user_id)
     updated_substask = await update_subtask(db, substask_id, substask_update)
     return updated_substask
@@ -28,6 +29,7 @@ async def delete_existing_substask(
     db: AsyncSession = Depends(get_db),
     user_id: int = Depends(get_current_user_id)
 ):
+    task_id = await get_task_id_by_subtask_id(db, substask_id)
     await verify_task_owner(db, task_id, user_id)
     await delete_subtask(db, substask_id)
     return {"detail": "Subtask deleted successfully"}

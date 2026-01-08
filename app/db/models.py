@@ -35,6 +35,7 @@ class SubTask(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     task_id: Mapped[int] = mapped_column(ForeignKey("tasks.id"), index=True)
     title: Mapped[str] = mapped_column(String, index=True)
+    description: Mapped[str] = mapped_column(String, index=True, nullable=True)
     is_completed: Mapped[bool] = mapped_column(default=False)
 
     task: Mapped["Task"] = relationship("Task", back_populates="subtasks")

@@ -119,7 +119,7 @@ async def verify_task_owner(
             Task.user_id == user_id
         )
     )
-    task = result.scalars().first()
+    task = result.scalar_one_or_none()
 
     if not task:
         raise HTTPException(

@@ -7,7 +7,7 @@ from app.schemas.task import PaginatedTaskResponse
 from typing import List
 from app.auth.utils import get_current_user_id
 from app.schemas.subtask import SubtaskCreate, SubtaskResponse
-from app.services.subtask_service import create_subtask ,get_subtask_by_id ,get_subtasks_by_task
+from app.services.subtask_service import create_subtask_service ,get_subtask_by_id ,get_subtasks_by_task
 
 router = APIRouter(prefix="/tasks", tags=["tasks"])
 
@@ -75,7 +75,7 @@ async def create_subtask(
 ):
     await verify_task_owner(db, task_id, user_id)
     subtask.task_id = task_id   
-    subtask_response = await create_subtask(db, subtask)
+    subtask_response = await create_subtask_service(db, subtask)
     return subtask_response
 
 @router.get("/{task_id}/subtasks", response_model=List[SubtaskResponse])
