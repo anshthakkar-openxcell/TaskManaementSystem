@@ -7,7 +7,7 @@ from app.core.redis import redis_client
 import json
 router = APIRouter(prefix="/task_summary", tags=["task_summary"])
 
-@router.get("/{task_id}/summary", response_model=dict)
+@router.get("/{task_id}", response_model=dict)
 async def get_task_summary(
     task_id: int,
     db: AsyncSession = Depends(get_db),
