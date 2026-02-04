@@ -9,3 +9,4 @@ pydantic
 email-validator
 redis>=5.0.0
 pydantic-settings
+alembic
