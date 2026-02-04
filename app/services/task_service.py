@@ -3,7 +3,7 @@ from sqlalchemy import select ,func
 from typing import List, Optional
 from fastapi import HTTPException
 
-from app.schemas.task import TaskCreate, TaskUpdate, TaskResponse
+from app.schemas.task import PaginatedTaskResponse, TaskCreate, TaskUpdate, TaskResponse
 from app.db.models import Task
 
 
@@ -30,12 +30,16 @@ async def get_tasks_by_user(
     user_id: int,
     page: int,
     size: int,
-) -> List[TaskResponse]:
-    offset = (page - 1) * size
+) -> PaginatedTaskResponse:
+    offset = max((page - 1) * size, 0)
+
+    # Count total tasks
     total_result = await db.execute(
         select(func.count()).select_from(Task).where(Task.user_id == user_id)
     )
-    total = total_result.scalar()
+    total = total_result.scalar() or 0
+
+    # Fetch paginated tasks
     result = await db.execute(
         select(Task)
         .where(Task.user_id == user_id)
@@ -44,12 +48,12 @@ async def get_tasks_by_user(
     )
     tasks = result.scalars().all()
 
-    return {
-        "items": [TaskResponse.model_validate(task) for task in tasks],
-        "total": total,
-        "page": page,
-        "limit": size,
-    }
+    return PaginatedTaskResponse(
+        items=[TaskResponse.model_validate(task) for task in tasks],
+        total=total,
+        page=page,
+        limit=size,
+    )
 
 
 async def get_task_by_id(
